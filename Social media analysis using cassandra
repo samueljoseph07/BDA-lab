@@ -1,0 +1,30 @@
+Execute in cmd:
+...
+docker images
+docker pull cassandra
+docker ps
+docker exec -it <container id> bash
+  cqlsh
+create keyspace social_media with replication = {'class':'SimpleStrategy','replication_factor':1}; 
+use social_media;
+
+create table social_media.users( 
+                ... user_id int primary key, 
+                ... username text, 
+                ... email text, 
+                ... registration_date timestamp 
+                ... );
+
+insert into social_media.users(user_id,username,email,registration_date) 
+                ... values(1,'user1','user1@example.com',toTimestamp(now())); 
+insert into social_media.users(user_id,username,email,registration_date) 
+                ... values(2,'user2','user2@example.com',toTimestamp(now())); 
+insert into social_media.users(user_id,username,email,registration_date) 
+                ... values(3,'user3','user3@example.com',toTimestamp(now())); 
+insert into social_media.users(user_id,username,email,registration_date) 
+                ... values(4,'user4','user4@example.com',toTimestamp(now())); 
+insert into social_media.users(user_id,username,email,registration_date) 
+                ... values(5,'user5','user5@example.com',toTimestamp(now())); 
+
+select * from users; 
+...
