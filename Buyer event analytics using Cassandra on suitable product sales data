@@ -1,0 +1,137 @@
+Execute in cmd:
+...
+docker images
+docker pull cassandra
+docker ps
+docker exec -it <container id> bash
+  cqlsh
+
+create keyspace buyer_events with replication = {'class' : 'SimpleStrategy','replication_factor':'1'};
+
+create table buyers( 
+                ... buyer_id int primary key, 
+                ... username text, 
+                ... email text, 
+                ... address text);
+
+insert into buyers(buyer_id,username,email,address) 
+                ... values(1,'user1','user1@example.com','hyd'); 
+cqlsh:buyer_events> insert into buyers(buyer_id,username,email,address) 
+                ... values(2,'user2','user2@example.com','mum'); 
+cqlsh:buyer_events> insert into buyers(buyer_id,username,email,address) 
+                ... values(3,'user3','user3@example.com','pun'); 
+cqlsh:buyer_events> insert into buyers(buyer_id,username,email,address) 
+                ... values(4,'user4','user4@example.com','hyd'); 
+cqlsh:buyer_events> insert into buyers(buyer_id,username,email,address) 
+                ... values(5,'user5','user5@example.com','pun'); 
+insert into buyers(buyer_id,username,email,address) 
+                ... values(6,'user6','user6@example.com','mum');
+select * from buyers;
+
+create table products( 
+                ... product_id int primary key, 
+                ... name text, 
+                ... category text, 
+                ... price int); 
+
+cqlsh:buyer_events> insert into products(product_id,name,category,price) 
+                ... values (1, 'coffee maker', 'appliances', 60); 
+cqlsh:buyer_events> insert into products (product_id, name, category, price) 
+                ... values (2, 'phone', 'electronics', 300); 
+cqlsh:buyer_events> insert into products (product_id, name, category, price) 
+                ... values (3, 'led tv', 'electronics', 600); 
+cqlsh:buyer_events> insert into products (product_id, name, category, price) 
+                ... values (4,'running shoes', 'apparel', 100);
+cqlsh:buyer_events> insert into products (product_id, name, category, price) 
+                ... values (5,'oven', 'appliances', 500); 
+cqlsh:buyer_events> select * from products; 
+
+create table purchase_history( 
+                ... transactionID int primary key, 
+                ... buyer_id int, 
+                ... product_id int, 
+                ... quantity int, 
+                ... total_amount int, 
+                ... purchase_date timestamp);
+
+insert into purchase_history(transactionID,buyer_id,product_id,quantity,total_amount,purchase_date) 
+
+cqlsh:buyer_events> insert into 
+purchase_history(transactionID,buyer_id,product_id,quantity,total_amount,purchase_date) 
+                ... values(2,1,4,4,400,toTimestamp(now())); 
+cqlsh:buyer_events> insert into 
+purchase_history(transactionID,buyer_id,product_id,quantity,total_amount,purchase_date) 
+                ... values(3,2,4,1,100,toTimestamp(now())); 
+cqlsh:buyer_events> insert into 
+purchase_history(transactionID,buyer_id,product_id,quantity,total_amount,purchase_date) 
+                ... values(4,2,1,3,180,toTimestamp(now())); 
+cqlsh:buyer_events> insert into 
+purchase_history(transactionID,buyer_id,product_id,quantity,total_amount,purchase_date) 
+                ... values(5,3,3,4,2400,toTimestamp(now())); 
+cqlsh:buyer_events> insert into 
+purchase_history(transactionID,buyer_id,product_id,quantity,total_amount,purchase_date) 
+                ... values(6,4,2,2,600,toTimestamp(now()));
+
+QUERIES : 
+ 
+1. RETRIEVE BUYER’S PURCHASE HISTORY 
+  
+              select * from purchase_history where buyer_id = 1 allow filtering; 
+  
+ 
+ 
+  
+2. FIND TOTAL NUMBER OF PRODUCTS 
+  
+select count(product_id) from products; 
+  
+  
+  
+3. RETRIEVE TOTAL SPENDING BY A BUYER 
+  
+select sum(total_amount) from purchase_history where buyer_id = 2 allow filtering;   
+  
+  
+4. RETRIEVE PRODUCTS BY CATEGORY 
+  
+select * from products where category = 'electronics' allow filtering; 
+  
+  
+  
+5. FIND THE MAXIMUM PRICE 
+Select max(price) from products; 
+  
+  
+  
+6. TO FIND TOTAL NUMBER OF BUYERS 
+  
+select count(buyer_id) from buyers; 
+ 
+  
+7. FIND AVERAGE PRICE OF PRODUCTS OF A PARTICULAR CATEGORY 
+  
+select avg(price) from products where category='electronics' allow filtering; 
+  
+  
+  
+8. SELECT PRODUCTS IN  A PARTICULAR PRICE RANGE 
+  
+select * from products where price>=100 and price<=400 allow filtering; 
+  
+9. TO FIND NUMBER OF BUYERS FROM A SPECIFIC LOCATION 
+  
+select count(buyer_id) from buyers where address='pun' allow filtering; 
+  
+  
+10. TO FIND ALL THE PURCHASES OF A PARTICULAR PRODUCT 
+  
+select * from purchase_history where product_id = 4 allow filtering; 
+  
+ 
+ 
+  
+11. TO FIND TOTAL AMOUNT OBTAINED THROUGH SALES OF A PARTICULAR 
+PRODUCT 
+  
+select sum(total_amount) from purchase_history where product_id = 4 allow filtering;
+
