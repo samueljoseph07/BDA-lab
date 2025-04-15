@@ -5,26 +5,64 @@ docker pull cassandra
 docker ps
 docker exec -it <container id> bash
   cqlsh
-create keyspace social_media with replication = {'class':'SimpleStrategy','replication_factor':1}; 
+
+create keyspace social_media with replication = {'class':'SimpleStrategy','replication_factor':1};
+
 use social_media;
+create table social_media.users(
+  user_id int primary key,
+  username text,
+  email text,
+  registration_date timestamp
+  );
 
-create table social_media.users( 
-                ... user_id int primary key, 
-                ... username text, 
-                ... email text, 
-                ... registration_date timestamp 
-                ... );
+insert into social_media.users(user_id,username,email,registration_date) values(1,'user1','user1@example.com',toTimestamp(now()));
+insert into social_media.users(user_id,username,email,registration_date) values(2,'user2','user2@example.com',toTimestamp(now()));
+insert into social_media.users(user_id,username,email,registration_date) values(3,'user3','user3@example.com',toTimestamp(now()));
+insert into social_media.users(user_id,username,email,registration_date) values(4,'user4','user4@example.com',toTimestamp(now()));
+insert into social_media.users(user_id,username,email,registration_date) values(5,'user5','user5@example.com',toTimestamp(now()));
 
-insert into social_media.users(user_id,username,email,registration_date) 
-                ... values(1,'user1','user1@example.com',toTimestamp(now())); 
-insert into social_media.users(user_id,username,email,registration_date) 
-                ... values(2,'user2','user2@example.com',toTimestamp(now())); 
-insert into social_media.users(user_id,username,email,registration_date) 
-                ... values(3,'user3','user3@example.com',toTimestamp(now())); 
-insert into social_media.users(user_id,username,email,registration_date) 
-                ... values(4,'user4','user4@example.com',toTimestamp(now())); 
-insert into social_media.users(user_id,username,email,registration_date) 
-                ... values(5,'user5','user5@example.com',toTimestamp(now())); 
+select * from users;
 
-select * from users; 
+
+CREATE TABLE social_media.user_post_activity (
+  user_id int,    
+  post_id int,    
+  activity_type text,
+  activity_timestamp timestamp,
+  PRIMARY KEY (user_id, post_id)
+);
+
+INSERT INTO social_media.user_post_activity (user_id, post_id, activity_type,activity_timestamp)VALUES (2, 101, 'like', toTimestamp(now()));
+
+INSERT INTO social_media.user_post_activity (user_id, post_id, activity_type,activity_timestamp)VALUES (3, 102, 'comment', toTimestamp(now()));
+
+INSERT INTO social_media.user_post_activity (user_id, post_id, activity_type,activity_timestamp)VALUES (4, 103, 'share', toTimestamp(now()));
+
+INSERT INTO social_media.user_post_activity (user_id, post_id, activity_type, activity_timestamp)VALUES (5, 101, 'like', toTimestamp(now()));
+
+INSERT INTO social_media.user_post_activity (user_id, post_id, activity_type, activity_timestamp)VALUES (1, 104, 'comment', toTimestamp(now()));
+
+CREATE TABLE social_media.posts (
+  post_id int PRIMARY KEY,
+  user_id int,          
+  content text,
+  created_at timestamp
+);
+
+INSERT INTO social_media.posts (post_id, user_id, content, created_at)VALUES (101, 1, 'Just joined this awesome social platform!', toTimestamp(now()));
+
+INSERT INTO social_media.posts (post_id, user_id, content, created_at)VALUES (102, 2, 'Does anyone have book recommendations for AI?', toTimestamp(now()));
+
+INSERT INTO social_media.posts (post_id, user_id, content, created_at)VALUES (103, 3, 'Throwback to my first coding project in Python!', toTimestamp(now()));
+
+INSERT INTO social_media.posts (post_id, user_id, content, created_at)VALUES (104, 4, 'Morning thoughts: Coffee > Code or Code > Coffee?', toTimestamp(now()));
+
+INSERT INTO social_media.posts (post_id, user_id, content, created_at)VALUES (105, 5, 'Who else is excited for the weekend hackathon?!', toTimestamp(now()));
+
+SELECT * FROM social_media.users;
+SELECT * FROM social_media.posts WHERE user_id = 1 ALLOW FILTERING;
+SELECT * FROM social_media.user_post_activity WHERE user_id = 3;
+SELECT * FROM social_media.user_post_activity WHERE post_id = 101 AND activity_type = 'like' ALLOW FILTERING;
+SELECT post_id, activity_type FROM social_media.user_post_activity WHERE user_id = 2;
 ...
